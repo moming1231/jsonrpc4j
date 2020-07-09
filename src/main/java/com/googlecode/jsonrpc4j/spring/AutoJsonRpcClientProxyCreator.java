@@ -52,7 +52,8 @@ public class AutoJsonRpcClientProxyCreator implements BeanFactoryPostProcessor, 
 					String jsonRpcPathAnnotation = JsonRpcService.class.getName();
 					if (annotationMetadata.isAnnotated(jsonRpcPathAnnotation)) {
 						String className = classMetadata.getClassName();
-						String path = (String) annotationMetadata.getAnnotationAttributes(jsonRpcPathAnnotation).get("value");
+						String path = className;
+						//String path = (String) annotationMetadata.getAnnotationAttributes(jsonRpcPathAnnotation).get("value");
 						logger.debug("Found JSON-RPC service to proxy [{}] on path '{}'.", className, path);
 						registerJsonProxyBean(defaultListableBeanFactory, className, path);
 					}
@@ -93,12 +94,19 @@ public class AutoJsonRpcClientProxyCreator implements BeanFactoryPostProcessor, 
 	/**
 	 * Appends the base path to the path found in the interface.
 	 */
-	private String appendBasePath(String path) {
+	/*private String appendBasePath(String path) {
 		try {
 			return new URL(baseUrl, path).toString();
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(format("Cannot combine URLs '%s' and '%s' to valid URL.", baseUrl, path), e);
 		}
+	}*/
+	private String appendBasePath(String path) {
+			String url = baseUrl.toString();
+			if (!url.endsWith("/")) {
+				url = url.concat("/");
+			}
+			return url.concat(path);
 	}
 	
 	@Override
